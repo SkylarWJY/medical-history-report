@@ -1,0 +1,12 @@
+# never commit real patient data / records
+*.zip
+**/病例*/
+**/病历*/
+real_*/
+private_*/
+*-真实*
+# scratch
+/tmp/
+__pycache__/
+*.pyc
+.DS_Store

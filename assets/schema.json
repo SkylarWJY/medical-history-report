@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Patient health-report data (consumed by scripts/build_report.py)",
+  "description": "Structured, evidence-based summary of one person's medical records. Every field is OPTIONAL — sections are rendered only when present. NEVER invent values; leave a field out if the records do not support it, and use status words like '需医生确认' for uncertainty.",
+  "type": "object",
+  "properties": {
+    "patient": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "标题（演示时务必使用化名）" },
+        "subtitle": { "type": "string" },
+        "pills": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "overall": {
+      "type": "object",
+      "properties": {
+        "risk_label": { "type": "string" },
+        "risk_note": { "type": "string" },
+        "stats": { "type": "array", "items": {
+          "type": "object",
+          "properties": {
+            "k": { "type": "string" }, "v": { "type": "string" },
+            "color": { "enum": ["green", "yellow", "orange", "red", "blue"] },
+            "note": { "type": "string" }
+          }
+        }},
+        "long_existing": { "type": "string" },
+        "new_recent": { "type": "string" },
+        "top_risk_hint": { "type": "string" }
+      }
+    },
+    "top_issues": { "type": "array", "items": {
+      "type": "object",
+      "properties": {
+        "rank": { "type": "integer" },
+        "level": { "enum": ["green", "yellow", "orange", "red"] },
+        "title": { "type": "string" }, "why": { "type": "string" },
+        "evidence": { "type": "string" }, "advice": { "type": "string" }
+      }
+    }},
+    "evolution": {
+      "description": "病情变化史：诊断/分期/状态随时间的演变（一张表）",
+      "type": "array", "items": {
+        "type": "object",
+        "properties": {
+          "period": { "type": "string" }, "diagnosis": { "type": "string" },
+          "status": { "type": "string" },
+          "status_level": { "enum": ["green", "yellow", "orange", "red", "blue"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "lesions": {
+      "description": "重点病灶尺寸追踪：每个肿块逐次的精确尺寸。本节是报告的核心价值。",
+      "type": "array", "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }, "summary": { "type": "string" }, "note": { "type": "string" },
+          "rows": { "type": "array", "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string", "description": "YYYY-MM" },
+              "size": { "type": "string", "description": "原文尺寸 e.g. 4.0x2.9cm / 9x6mm" },
+              "extra": { "type": "string", "description": "性质/密度/分级，如 部分实性 / TI-RADS3" },
+              "suv": { "type": "string", "description": "PET 的 SUVmax，无则 '—'" },
+              "modality": { "type": "string", "description": "CT/MRI/超声/PET-CT" },
+              "trend": { "enum": ["up", "down", "flat", "baseline"] }
+            }
+          }}
+        }
+      }
+    },
+    "lab_trends": {
+      "type": "array", "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }, "ref": { "type": "string" }, "note": { "type": "string" },
+          "refline_ratio": { "type": "number", "description": "可选 0-1，参考线高度占比" },
+          "points": { "type": "array", "items": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" }, "value": { "type": "number" },
+              "level": { "enum": ["green", "yellow", "orange", "red"] }
+            }
+          }}
+        }
+      }
+    },
+    "markers": { "type": "array", "items": {
+      "type": "object",
+      "properties": { "n": { "type": "string" }, "v": { "type": "string" }, "rg": { "type": "string" } }
+    }},
+    "systems": { "type": "array", "items": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "level": { "enum": ["green", "yellow", "orange", "red"] },
+        "problem": { "type": "string" }, "trend": { "type": "string" }, "advice": { "type": "string" }
+      }
+    }},
+    "timeline": { "type": "array", "items": {
+      "type": "object",
+      "properties": {
+        "year": { "type": "string" }, "major": { "type": "boolean" },
+        "events": { "type": "array", "items": {
+          "type": "object",
+          "properties": {
+            "tag": { "enum": ["dx", "tx", "img", "fu", "other"] },
+            "text": { "type": "string" }, "where": { "type": "string" }
+          }
+        }}
+      }
+    }},
+    "changes": {
+      "type": "object",
+      "properties": {
+        "worse": { "type": "array", "items": { "type": "string" } },
+        "uncertain": { "type": "array", "items": { "type": "string" } },
+        "stable": { "type": "array", "items": { "type": "string" } },
+        "better": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "risk_matrix": { "type": "array", "items": {
+      "type": "object",
+      "properties": {
+        "level": { "enum": ["green", "yellow", "orange", "red"] },
+        "system": { "type": "string" }, "note": { "type": "string" }
+      }
+    }},
+    "family_qa": { "type": "array", "items": {
+      "type": "object", "properties": { "q": { "type": "string" }, "a": { "type": "string" } }
+    }},
+    "actions": {
+      "type": "object",
+      "properties": {
+        "now": { "type": "array", "items": { "type": "string" } },
+        "m1": { "type": "array", "items": { "type": "string" } },
+        "m3": { "type": "array", "items": { "type": "string" } },
+        "long": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "doctor_questions": { "type": "array", "items": { "type": "string" } },
+    "conclusion": { "type": "array", "items": {
+      "type": "object",
+      "properties": { "k": { "type": "string" }, "v": { "type": "string" }, "big": { "type": "boolean" } }
+    }},
+    "sources": { "type": "string" }
+  }
+}

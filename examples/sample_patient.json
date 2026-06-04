@@ -1,0 +1,170 @@
+{
+  "_disclaimer": "本文件为完全虚构的演示数据（patient name and all values are fictional）。仅用于展示报告模板，与任何真实病人无关。",
+  "patient": {
+    "name": "示例患者 · 林安然（化名 · 数据均为虚构）",
+    "subtitle": "女性 · 2016 年 56 岁起随访 → 2024 年约 64 岁 · 演示数据集（9 次就诊 / 虚构）",
+    "pills": [
+      "主线：体检发现的多发良性结节随访",
+      "重点：肺磨玻璃结节缓慢变化",
+      "整体：以观察随访为主"
+    ]
+  },
+  "overall": {
+    "risk_label": "低–中 / 以随访为主",
+    "risk_note": "多为良性背景结节，一处肺结节需定期复查",
+    "stats": [
+      { "k": "当前整体风险", "v": "低–中", "color": "yellow", "note": "良性为主，1 处待观察" },
+      { "k": "最需关注", "v": "肺磨玻璃结节", "color": "orange", "note": "缓慢增大，需复查" },
+      { "k": "甲状腺结节", "v": "TI-RADS 3", "color": "green", "note": "低度可疑，稳定" },
+      { "k": "血压控制", "v": "达标", "color": "green", "note": "服药后平稳" }
+    ],
+    "long_existing": "甲状腺结节、乳腺纤维腺瘤、肝血管瘤、脂肪肝、高血压（均长期、良性/可控）",
+    "new_recent": "左肺上叶磨玻璃结节由 4mm 增至 8mm（部分实性成分出现）",
+    "top_risk_hint": "肺磨玻璃结节（需呼吸科评估随访间隔）"
+  },
+  "top_issues": [
+    {
+      "rank": 1, "level": "orange",
+      "title": "左肺上叶磨玻璃结节（4mm → 8mm，出现实性成分）",
+      "why": "三年随访缓慢增大并出现实性成分，需警惕早期肺腺癌可能。",
+      "evidence": "2021 LDCT 4mm 纯磨玻璃 → 2023 6mm → 2024 8mm 混合磨玻璃（虚构示例）。",
+      "advice": "呼吸科 / 胸外科评估，3–6 个月薄层 CT 复查，必要时多学科会诊。"
+    },
+    {
+      "rank": 2, "level": "yellow",
+      "title": "甲状腺右叶结节（TI-RADS 3 类）",
+      "why": "低度可疑，体积稳定，恶性概率低但需定期超声随访。",
+      "evidence": "2018 0.6cm → 2024 0.7cm，边界清、无微钙化（虚构示例）。",
+      "advice": "甲状腺超声每 12 个月复查。"
+    },
+    {
+      "rank": 3, "level": "yellow",
+      "title": "高血压（已服药控制）",
+      "why": "心血管长期风险因素，需维持达标并监测靶器官。",
+      "evidence": "服药后 130/82 mmHg 左右；颈动脉内膜轻度增厚（虚构示例）。",
+      "advice": "心内科随访，监测血压、血脂、肾功能。"
+    }
+  ],
+  "evolution": [
+    { "period": "2016", "diagnosis": "体检发现甲状腺结节、肝血管瘤", "status": "首次发现 · 良性背景", "status_level": "green", "evidence": "甲状腺结节 0.5cm；肝血管瘤 1.2cm（虚构）" },
+    { "period": "2018", "diagnosis": "新增乳腺纤维腺瘤、确诊高血压", "status": "随访 · 开始服降压药", "status_level": "green", "evidence": "乳腺结节 BI-RADS 3；血压 150/95→服药" },
+    { "period": "2021", "diagnosis": "低剂量 CT 首次发现肺磨玻璃结节", "status": "新发 · 纯磨玻璃 4mm", "status_level": "yellow", "evidence": "左肺上叶 4mm 纯磨玻璃，建议随访" },
+    { "period": "2023", "diagnosis": "肺结节缓慢增大", "status": "随访 · 6mm", "status_level": "yellow", "evidence": "6mm，仍以磨玻璃为主" },
+    { "period": "2024", "diagnosis": "肺结节出现实性成分", "status": "需关注 · 8mm 混合密度", "status_level": "orange", "evidence": "8mm 混合磨玻璃，建议呼吸科评估" }
+  ],
+  "lesions": [
+    {
+      "name": "🫁 左肺上叶磨玻璃结节",
+      "summary": "三年缓慢增大并出现实性成分——本例最需随访项",
+      "rows": [
+        { "date": "2021-05", "size": "4 mm", "extra": "纯磨玻璃", "suv": "—", "modality": "LDCT", "trend": "baseline" },
+        { "date": "2023-06", "size": "6 mm", "extra": "磨玻璃为主", "suv": "—", "modality": "薄层CT", "trend": "up" },
+        { "date": "2024-07", "size": "8 mm", "extra": "混合磨玻璃(部分实性)", "suv": "—", "modality": "薄层CT", "trend": "up" }
+      ],
+      "note": "纯磨玻璃→出现实性成分是需要重视的演变，建议呼吸科评估随访/干预（虚构示例）。"
+    },
+    {
+      "name": "🦋 甲状腺右叶结节",
+      "summary": "多年稳定，TI-RADS 3 类",
+      "rows": [
+        { "date": "2018-03", "size": "0.6 cm", "extra": "边界清", "suv": "—", "modality": "超声", "trend": "baseline" },
+        { "date": "2021-04", "size": "0.6 cm", "extra": "无微钙化", "suv": "—", "modality": "超声", "trend": "flat" },
+        { "date": "2024-07", "size": "0.7 cm", "extra": "TI-RADS 3", "suv": "—", "modality": "超声", "trend": "flat" }
+      ],
+      "note": "低度可疑、稳定，每年超声随访即可（虚构示例）。"
+    },
+    {
+      "name": "🩷 乳腺纤维腺瘤",
+      "summary": "良性、稳定，BI-RADS 3",
+      "rows": [
+        { "date": "2018-03", "size": "1.1 cm", "extra": "BI-RADS 3", "suv": "—", "modality": "超声", "trend": "baseline" },
+        { "date": "2024-07", "size": "1.2 cm", "extra": "BI-RADS 3", "suv": "—", "modality": "超声", "trend": "flat" }
+      ],
+      "note": "典型良性表现，常规随访（虚构示例）。"
+    }
+  ],
+  "lab_trends": [
+    {
+      "name": "血压（收缩压 mmHg）",
+      "ref": "目标 < 140",
+      "refline_ratio": 0.7,
+      "points": [
+        { "label": "2018\n未服药", "value": 150, "level": "red" },
+        { "label": "2019\n服药", "value": 135, "level": "green" },
+        { "label": "2021", "value": 132, "level": "green" },
+        { "label": "2024", "value": 130, "level": "green" }
+      ],
+      "note": "服药后血压达标并平稳（虚构示例）。"
+    }
+  ],
+  "markers": [
+    { "n": "甲功 TSH", "v": "2.1", "rg": "0.4–4.0 正常" },
+    { "n": "血脂 LDL", "v": "2.8", "rg": "mmol/L 达标" },
+    { "n": "肿瘤标志物", "v": "正常", "rg": "CEA/CA125 等" },
+    { "n": "肝功能", "v": "正常", "rg": "ALT/AST" },
+    { "n": "肾功能", "v": "正常", "rg": "肌酐/eGFR" },
+    { "n": "空腹血糖", "v": "5.4", "rg": "mmol/L 正常" }
+  ],
+  "systems": [
+    { "name": "🫁 肺 / 呼吸", "level": "orange", "problem": "左肺上叶磨玻璃结节 4→8mm，出现实性成分。", "trend": "缓慢增大", "advice": "呼吸/胸外科评估，定期薄层 CT。" },
+    { "name": "🦋 甲状腺 / 内分泌", "level": "green", "problem": "右叶结节 0.7cm，TI-RADS 3；甲功正常。", "trend": "稳定", "advice": "每年超声随访。" },
+    { "name": "🩷 乳腺", "level": "green", "problem": "纤维腺瘤 1.2cm，BI-RADS 3。", "trend": "稳定", "advice": "常规随访。" },
+    { "name": "❤️ 心血管", "level": "yellow", "problem": "高血压（服药达标）；颈动脉内膜轻度增厚。", "trend": "可控", "advice": "心内科随访，控血脂血压。" },
+    { "name": "🫀 肝胆", "level": "green", "problem": "肝血管瘤 1.2cm；脂肪肝。", "trend": "稳定", "advice": "腹部超声随访。" }
+  ],
+  "timeline": [
+    { "year": "2016 · 首次体检", "major": false, "events": [
+      { "tag": "other", "text": "体检发现甲状腺小结节、肝血管瘤，均考虑良性。", "where": "示例体检中心" }
+    ]},
+    { "year": "2018 · 新增随访项", "major": false, "events": [
+      { "tag": "dx", "text": "发现乳腺纤维腺瘤（BI-RADS 3）；确诊高血压并开始服药。", "where": "示例医院" }
+    ]},
+    { "year": "2021 · 肺结节首现", "major": true, "events": [
+      { "tag": "img", "text": "低剂量 CT 首次发现左肺上叶 4mm 纯磨玻璃结节，建议随访。", "where": "示例医院 LDCT" }
+    ]},
+    { "year": "2023 · 缓慢增大", "major": false, "events": [
+      { "tag": "img", "text": "肺结节增至 6mm，仍以磨玻璃为主。", "where": "示例医院 薄层CT" }
+    ]},
+    { "year": "2024 · 出现实性成分", "major": true, "events": [
+      { "tag": "img", "text": "肺结节 8mm 混合磨玻璃，出现实性成分，建议呼吸科评估。", "where": "示例医院 薄层CT" },
+      { "tag": "fu", "text": "甲状腺、乳腺、肝血管瘤复查均稳定。", "where": "示例医院" }
+    ]}
+  ],
+  "changes": {
+    "worse": ["肺磨玻璃结节缓慢增大（4→8mm）并出现实性成分。"],
+    "uncertain": ["肺结节最终性质需呼吸科结合薄层 CT / 必要时活检判断。"],
+    "stable": ["甲状腺结节、乳腺纤维腺瘤、肝血管瘤多年稳定；血压达标。"],
+    "better": ["高血压经服药从 150/95 降至 130/82 平稳达标。"]
+  },
+  "risk_matrix": [
+    { "level": "orange", "system": "肺磨玻璃结节", "note": "需定期复查" },
+    { "level": "yellow", "system": "高血压 / 心血管", "note": "维持达标" },
+    { "level": "green", "system": "甲状腺结节 TI-RADS3", "note": "年度随访" },
+    { "level": "green", "system": "乳腺纤维腺瘤 / 肝血管瘤", "note": "常规随访" }
+  ],
+  "family_qa": [
+    { "q": "❓ 她现在身体什么状态？", "a": "整体不错，多数是体检常见的良性小结节。唯一需要盯紧的是肺里一个磨玻璃结节，三年里慢慢长大了一点。（虚构示例）" },
+    { "q": "❓ 严重吗？", "a": "目前不是急症。肺结节需要呼吸科判断要不要更密切复查或处理，其余基本是定期看看就行。" },
+    { "q": "❓ 接下来最该做什么？", "a": "带上历次 CT 片，挂呼吸科评估肺结节随访间隔；甲状腺、乳腺、血压按年随访。" }
+  ],
+  "actions": {
+    "now": ["挂呼吸科/胸外科，带历次肺 CT 评估磨玻璃结节。"],
+    "m1": ["心内科随访血压，复查血脂、肾功能。"],
+    "m3": ["按医生建议复查肺薄层 CT，对比结节变化。"],
+    "long": ["甲状腺、乳腺、肝血管瘤每年超声；保留并更新病历档案。"]
+  },
+  "doctor_questions": [
+    "这个肺磨玻璃结节恶性可能多大？多久复查一次？要不要做 PET-CT 或穿刺？",
+    "甲状腺结节 TI-RADS 3 类需要穿刺吗？随访间隔多久？",
+    "血压目标值是多少？需要加做哪些靶器官检查？",
+    "这些结节之间有没有关联？还是各自独立随访即可？"
+  ],
+  "conclusion": [
+    { "k": "整体风险", "v": "低–中：以随访观察为主，1 处肺结节需重点复查。", "big": true },
+    { "k": "最需排查", "v": "左肺上叶磨玻璃结节（出现实性成分，需呼吸科评估）。" },
+    { "k": "已明确", "v": "甲状腺结节(TI-RADS3)、乳腺纤维腺瘤(BI-RADS3)、肝血管瘤、脂肪肝、高血压(已控)，均良性/可控。" },
+    { "k": "尚未明确", "v": "肺结节的最终性质需进一步随访/检查确认。" },
+    { "k": "最重要下一步", "v": "呼吸科评估肺结节随访方案；其余按年度随访。" }
+  ],
+  "sources": "示例数据来源：本报告为演示用途的虚构样本，不对应任何真实病历。"
+}
