@@ -8,6 +8,15 @@
 
 <br>
 
+**专门解决一件几乎没人做的事：**
+把一位生病老人**十年杂乱的扫描件**（手写、旋转、中英混排）→
+**家属能看懂的报告** ＋ **按部位追踪肿瘤大小** ＋ **缺哪一项检查、该补做什么**。
+
+> 市面上要么是给诊所的 EHR、要么是连医院端口拉**干净结构化数据**的聚合器、要么是给健康人**卖验血**的会员制 App——
+> **没有一个**针对"一箱看不懂的旧扫描件 + 给操心的家属"。这就是它存在的理由。
+
+<br>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.8+-3776AB?logo=python&logoColor=white)
 ![Claude Skill](https://img.shields.io/badge/Claude-Skill-D97757)
