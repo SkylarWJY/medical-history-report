@@ -107,7 +107,8 @@ Even if you're not sick, keep cholesterol, glucose, liver/kidney, thyroid, and t
 
 ```bash
 # Structured JSON → one HTML report (zero dependencies, ready to run)
-python3 scripts/build_report.py examples/sample_patient.json out.html
+python3 scripts/build_report.py examples/sample_patient.en.json out.html --lang en
+# 中文报告（默认）: python3 scripts/build_report.py examples/sample_patient.json out.html
 
 # (optional) export a long image + PDF, easy to share
 python3 scripts/export_pdf.py out.html out      # → out-long.png  +  out.pdf

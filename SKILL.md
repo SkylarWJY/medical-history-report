@@ -74,9 +74,11 @@ description: >-
 
 ### 4. 生成 HTML
 ```bash
-python3 scripts/build_report.py patient.json 报告.html
+python3 scripts/build_report.py patient.json 报告.html            # 中文（默认）
+python3 scripts/build_report.py patient.en.json report.html --lang en   # English
 ```
 生成单文件、自带样式、手机自适应的 HTML（表格可横滑、卡片自动单列）。
+**双语**：`--lang en` 切换栏目标题/徽章/表头等固定文案为英文；正文内容（病灶名、说明）按你给的 JSON 语言来——做英文报告就用英文数据（见 `examples/sample_patient.en.json`）。
 
 ### 5.（可选）导出长图 + PDF
 ```bash

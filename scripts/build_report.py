@@ -2,47 +2,71 @@
 # -*- coding: utf-8 -*-
 """
 build_report.py — Turn a structured patient JSON into a single self-contained,
-mobile-friendly HTML health dashboard (Chinese UI).
+mobile-friendly HTML health dashboard. Bilingual UI (中文 / English).
 
 Usage:
-    python3 build_report.py <patient.json> <output.html>
+    python3 build_report.py <patient.json> <output.html> [--lang zh|en]
 
-The input JSON schema is documented in assets/schema.json and demonstrated in
-examples/sample_patient.json. Every value in the output comes from the JSON —
-this script renders, it does not invent. Keep all clinical content evidence-based
-and flag uncertainty in the source data; this report never replaces a doctor.
+--lang switches the fixed UI chrome (section titles, badges, table headers).
+The CONTENT (lesion names, notes, etc.) comes from the JSON — author it in the
+same language you pass to --lang. Schema: assets/schema.json. Demo:
+examples/sample_patient.json. This script renders; it never invents. Keep
+clinical content evidence-based; the report never replaces a doctor.
 """
 import json
 import sys
 import html as _html
 
-LEVEL_BADGE = {
-    "green": ("b-green", "d-green"),
-    "yellow": ("b-yellow", "d-yellow"),
-    "orange": ("b-orange", "d-orange"),
-    "red": ("b-red", "d-red"),
-    "blue": ("b-blue", "d-green"),
-    "gray": ("b-gray", "d-green"),
-}
-LEVEL_TEXT = {"green": "低", "yellow": "需关注", "orange": "中高", "red": "高", "blue": "改善", "gray": "—"}
-TAG_LABEL = {"dx": ("t-dx", "诊断"), "tx": ("t-tx", "治疗"), "img": ("t-img", "影像"),
-             "fu": ("t-fu", "随访"), "other": ("t-other", "其他")}
-TREND = {"up": ('up', '↑ 增大'), "down": ('down', '↓ 缩小'), "flat": ('flat', '→ 持平'),
-         "baseline": ('flat', '基线')}
+LANG = "zh"
+
+
+def t(zh, en):
+    """Return the English string under --lang en, else Chinese."""
+    return en if LANG == "en" else zh
 
 
 def esc(x):
     return _html.escape(str(x)) if x is not None else ""
 
 
-def badge(level, text=None):
-    b, d = LEVEL_BADGE.get(level, LEVEL_BADGE["gray"])
-    t = text if text is not None else LEVEL_TEXT.get(level, "")
-    return f'<span class="badge {b}"><span class="dotr {d}"></span>{esc(t)}</span>'
-
-
 def get(d, k, default=None):
     return d.get(k, default) if isinstance(d, dict) else default
+
+
+LEVEL_BADGE = {
+    "green": ("b-green", "d-green"), "yellow": ("b-yellow", "d-yellow"),
+    "orange": ("b-orange", "d-orange"), "red": ("b-red", "d-red"),
+    "blue": ("b-blue", "d-green"), "gray": ("b-gray", "d-green"),
+}
+
+
+def level_text(level):
+    return {
+        "green": t("低", "Low"), "yellow": t("需关注", "Watch"),
+        "orange": t("中高", "Med-High"), "red": t("高", "High"),
+        "blue": t("改善", "Improved"), "gray": "—",
+    }.get(level, "")
+
+
+def tag_label(tag):
+    return {
+        "dx": ("t-dx", t("诊断", "Dx")), "tx": ("t-tx", t("治疗", "Tx")),
+        "img": ("t-img", t("影像", "Imaging")), "fu": ("t-fu", t("随访", "Follow-up")),
+        "other": ("t-other", t("其他", "Other")),
+    }.get(tag, ("t-other", t("其他", "Other")))
+
+
+def trend_label(tr):
+    return {
+        "up": ('up', t('↑ 增大', '↑ larger')), "down": ('down', t('↓ 缩小', '↓ smaller')),
+        "flat": ('flat', t('→ 持平', '→ stable')), "baseline": ('flat', t('基线', 'baseline')),
+    }.get(tr, ('flat', ''))
+
+
+def badge(level, text=None):
+    b, d = LEVEL_BADGE.get(level, LEVEL_BADGE["gray"])
+    txt = text if text is not None else level_text(level)
+    return f'<span class="badge {b}"><span class="dotr {d}"></span>{esc(txt)}</span>'
 
 
 CSS = """
@@ -63,7 +87,7 @@ header.top .sub{opacity:.92;font-size:14px}
 .disclaimer{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:13px 16px;font-size:13px;margin-bottom:24px}
 section{margin-bottom:30px}
 h2.sec{font-size:20px;font-weight:800;margin:0 0 4px;display:flex;align-items:center;gap:10px}
-h2.sec .num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--blue);color:#fff;font-size:14px;font-weight:700;flex:none}
+h2.sec .num{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 7px;border-radius:9px;background:var(--blue);color:#fff;font-size:13px;font-weight:700;flex:none}
 .sec-desc{color:var(--muted);font-size:13px;margin:0 0 14px;padding-left:40px}
 .grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
 @media(max-width:820px){.g2,.g3{grid-template-columns:1fr}}
@@ -128,17 +152,17 @@ def render(d):
     out = []
     A = out.append
 
-    # header
     pills = "".join(f'<span class="pill">{esc(x)}</span>' for x in get(p, "pills", []))
     A(f'''<header class="top"><div class="wrap">
-      <div class="brand">个人健康全景分析 · HEALTH OVERVIEW</div>
-      <h1>{esc(get(p,"name","健康全景报告"))}</h1>
+      <div class="brand">{t("个人健康全景分析 · HEALTH OVERVIEW","PERSONAL HEALTH OVERVIEW")}</div>
+      <h1>{esc(get(p,"name", t("健康全景报告","Health Overview Report")))}</h1>
       <div class="sub">{esc(get(p,"subtitle",""))}</div>
       <div class="pills">{pills}</div>
     </div></header><div class="wrap">''')
 
-    A('''<div class="disclaimer"><b>重要说明：</b>本报告由 AI 依据病历原文整理，<b>仅用于帮助家属理解病情、与医生沟通，不能替代医生诊断</b>。
-      所有判断均应基于病历原文；不确定处需写明"需医生确认"。如遇红色提示请优先就医。</div>''')
+    A(f'''<div class="disclaimer"><b>{t("重要说明：","Important: ")}</b>{t(
+        "本报告由 AI 依据病历原文整理，<b>仅用于帮助家属理解病情、与医生沟通，不能替代医生诊断</b>。所有判断均应基于病历原文；不确定处需写明“需医生确认”。如遇红色提示请优先就医。",
+        "This report is compiled by AI from the source records — <b>to help families understand the situation and talk to doctors; it does not replace a diagnosis</b>. Everything should be grounded in the records; uncertainty is marked “needs doctor confirmation.” Red flags mean seek care first.")}</div>''')
 
     n = 0
     def secnum():
@@ -146,23 +170,23 @@ def render(d):
         n += 1
         return n
 
-    # 1 overview
+    # overview
     if ov:
         stats = "".join(
             f'<div class="stat"><div class="k">{esc(get(s,"k"))}</div>'
             f'<div class="v" style="color:var(--{get(s,"color","blue") if get(s,"color") in ["green","yellow","orange","red"] else "ink"})">{esc(get(s,"v"))}</div>'
             f'<div class="note">{esc(get(s,"note",""))}</div></div>'
             for s in get(ov, "stats", []))
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>整体健康概览</h2>
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("整体健康概览","Overall Health Overview")}</h2>
           <p class="sec-desc">{esc(get(ov,"risk_note",""))}</p>
           <div class="stats" style="margin-bottom:16px">{stats}</div>
           <div class="grid g3">
-            <div class="card"><h3>📌 长期存在</h3><div style="font-size:13px">{esc(get(ov,"long_existing",""))}</div></div>
-            <div class="card"><h3>🆕 近期新发/升级</h3><div style="font-size:13px">{esc(get(ov,"new_recent",""))}</div></div>
-            <div class="card"><h3>⚠ 优先关注</h3><div style="font-size:13px">{esc(get(ov,"top_risk_hint",""))}</div></div>
+            <div class="card"><h3>📌 {t("长期存在","Long-standing")}</h3><div style="font-size:13px">{esc(get(ov,"long_existing",""))}</div></div>
+            <div class="card"><h3>🆕 {t("近期新发/升级","New / escalated")}</h3><div style="font-size:13px">{esc(get(ov,"new_recent",""))}</div></div>
+            <div class="card"><h3>⚠ {t("优先关注","Top priority")}</h3><div style="font-size:13px">{esc(get(ov,"top_risk_hint",""))}</div></div>
           </div></section>''')
 
-    # 2 top issues
+    # top issues
     issues = get(d, "top_issues", [])
     if issues:
         rows = []
@@ -171,25 +195,25 @@ def render(d):
             c = colors.get(get(it, "level", "yellow"), "var(--yellow)")
             rows.append(f'''<div class="row"><div class="rank" style="background:{c}">{esc(get(it,"rank",""))}</div>
               <div class="body"><div class="title">{esc(get(it,"title"))} {badge(get(it,"level","yellow"))}</div>
-              <div class="meta">为什么重要：{esc(get(it,"why",""))}</div>
-              <div class="ev">📄 证据：{esc(get(it,"evidence",""))}</div>
-              <div class="meta">建议：{esc(get(it,"advice",""))}</div></div></div>''')
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>当前最需要关注的问题</h2>
-          <p class="sec-desc">按优先级排序。</p><div class="card top5">{"".join(rows)}</div></section>''')
+              <div class="meta">{t("为什么重要：","Why it matters: ")}{esc(get(it,"why",""))}</div>
+              <div class="ev">📄 {t("证据：","Evidence: ")}{esc(get(it,"evidence",""))}</div>
+              <div class="meta">{t("建议：","Suggested: ")}{esc(get(it,"advice",""))}</div></div></div>''')
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("当前最需要关注的问题","Top issues right now")}</h2>
+          <p class="sec-desc">{t("按优先级排序。","In priority order.")}</p><div class="card top5">{"".join(rows)}</div></section>''')
 
-    # evolution (病情变化史)
+    # evolution
     ev = get(d, "evolution", [])
     if ev:
         trs = "".join(
             f'<tr><td><b>{esc(get(e,"period"))}</b></td><td>{esc(get(e,"diagnosis"))}</td>'
             f'<td class="c">{badge(get(e,"status_level","gray"), get(e,"status"))}</td>'
             f'<td>{esc(get(e,"evidence",""))}</td></tr>' for e in ev)
-        A(f'''<section><h2 class="sec"><span class="num" style="background:#7c3aed">史</span>病情变化史 · 诊断演变一览</h2>
-          <p class="sec-desc">用一张表看清"诊断 / 状态"如何随时间变化——理解全局最快的一节。</p>
-          <div class="scroll"><table><thead><tr><th>时期</th><th>诊断/分期</th><th>病情状态</th><th>关键证据</th></tr></thead>
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#7c3aed">{t("史","Hx")}</span>{t("病情变化史 · 诊断演变一览","How the condition evolved")}</h2>
+          <p class="sec-desc">{t("用一张表看清“诊断 / 状态”如何随时间变化——理解全局最快的一节。","One table showing how diagnosis and status changed over time — the fastest way to see the whole picture.")}</p>
+          <div class="scroll"><table><thead><tr><th>{t("时期","Period")}</th><th>{t("诊断/分期","Diagnosis / stage")}</th><th>{t("病情状态","Status")}</th><th>{t("关键证据","Key evidence")}</th></tr></thead>
           <tbody>{trs}</tbody></table></div></section>''')
 
-    # data gaps (缺什么检查要补)
+    # data gaps
     dg = get(d, "data_gaps", [])
     if dg:
         trs = "".join(
@@ -197,52 +221,52 @@ def render(d):
             f'<td>{esc(get(x,"last_result",""))}</td>'
             f'<td class="c">{badge(get(x,"recheck_level","gray"), get(x,"recheck",""))}</td>'
             f'<td>👉 {esc(get(x,"todo",""))}</td></tr>' for x in dg)
-        A(f'''<section><h2 class="sec"><span class="num" style="background:#b91c1c">缺</span>关键数据缺口：缺什么检查要补</h2>
-          <p class="sec-desc">{esc(get(d,"data_gaps_note","同一个部位要用同一种检查、对比同一种检查才有意义；下面列出每个部位最近一次标准检查、是否复查、以及现在该补做什么。"))}</p>
-          <div class="scroll"><table><thead><tr><th>部位</th><th>最近一次标准检查</th><th>那次结果</th><th>最近复查了吗</th><th>现在要补做</th></tr></thead>
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#b91c1c">{t("缺","Gap")}</span>{t("关键数据缺口：缺什么检查要补","Data gaps: which exam is missing")}</h2>
+          <p class="sec-desc">{esc(get(d,"data_gaps_note", t("同一个部位要用同一种检查、对比同一种检查才有意义；下面列出每个部位最近一次标准检查、是否复查、以及现在该补做什么。","A site is only comparable when measured by the same exam. Below: each site's last standard exam, whether it was rechecked, and what to get now.")))}</p>
+          <div class="scroll"><table><thead><tr><th>{t("部位","Site")}</th><th>{t("最近一次标准检查","Last standard exam")}</th><th>{t("那次结果","Result")}</th><th>{t("最近复查了吗","Rechecked?")}</th><th>{t("现在要补做","Get now")}</th></tr></thead>
           <tbody>{trs}</tbody></table></div></section>''')
 
-    # lesion size tracking
+    # lesions
     lesions = get(d, "lesions", [])
     if lesions:
         blocks = []
         for L in lesions:
             trs = []
             for r in get(L, "rows", []):
-                tc, tt = TREND.get(get(r, "trend", "flat"), ("flat", ""))
+                tc, tt = trend_label(get(r, "trend", "flat"))
                 trs.append(f'<tr><td>{esc(get(r,"date"))}</td><td><b>{esc(get(r,"size"))}</b></td>'
                             f'<td>{esc(get(r,"extra",""))}</td><td class="c">{esc(get(r,"suv","—"))}</td>'
                             f'<td>{esc(get(r,"modality",""))}</td><td class="{tc}">{tt}</td></tr>')
             blocks.append(f'''<h3 style="margin:18px 0 8px;font-size:15.5px">{esc(get(L,"name"))} — {esc(get(L,"summary",""))}</h3>
-              <div class="scroll"><table><thead><tr><th>日期</th><th>尺寸</th><th>性质/描述</th><th>SUV</th><th>检查</th><th>趋势</th></tr></thead>
+              <div class="scroll"><table><thead><tr><th>{t("日期","Date")}</th><th>{t("尺寸","Size")}</th><th>{t("性质/描述","Type / notes")}</th><th>SUV</th><th>{t("检查","Exam")}</th><th>{t("趋势","Trend")}</th></tr></thead>
               <tbody>{"".join(trs)}</tbody></table></div><p class="note-src">{esc(get(L,"note",""))}</p>''')
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>重点病灶尺寸变化轨迹（核心）</h2>
-          <p class="sec-desc">每个病灶的逐次精确尺寸。↑增大 / ↓缩小 / →持平。</p>{"".join(blocks)}</section>''')
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("重点病灶尺寸变化轨迹（核心）","Per-lesion size trail (core)")}</h2>
+          <p class="sec-desc">{t("每个病灶的逐次精确尺寸。↑增大 / ↓缩小 / →持平。","Each lesion's exact size over time. ↑ larger / ↓ smaller / → stable.")}</p>{"".join(blocks)}</section>''')
 
-    # exam plan (每个部位认准做哪种检查 + 随访频率)
+    # exam plan
     ep = get(d, "exam_plan", [])
     if ep:
         cards = "".join(
             f'''<div class="card" style="border-left:4px solid var(--blue)"><h3 style="font-size:15px">{esc(get(x,"site"))}</h3>
-            <div style="font-size:13px"><b>✅ 认准做：</b><span style="color:var(--blue-d)"><b>{esc(get(x,"exam"))}</b></span>'''
-            + (f'　<b>多久一次：</b>{esc(get(x,"freq"))}' if get(x, "freq") else "")
-            + (f'<br><b>为什么：</b>{esc(get(x,"why"))}' if get(x, "why") else "")
-            + (f'<br><span style="color:var(--muted)">历年用过（看它怎么换来换去）：{esc(get(x,"used_before"))}</span>' if get(x, "used_before") else "")
+            <div style="font-size:13px"><b>{t("✅ 认准做：","✅ Use: ")}</b><span style="color:var(--blue-d)"><b>{esc(get(x,"exam"))}</b></span>'''
+            + (f'　<b>{t("多久一次：","Every: ")}</b>{esc(get(x,"freq"))}' if get(x, "freq") else "")
+            + (f'<br><b>{t("为什么：","Why: ")}</b>{esc(get(x,"why"))}' if get(x, "why") else "")
+            + (f'<br><span style="color:var(--muted)">{t("历年用过（看它怎么换来换去）：","Used over the years: ")}{esc(get(x,"used_before"))}</span>' if get(x, "used_before") else "")
             + '</div></div>'
             for x in ep)
-        A(f'''<section><h2 class="sec"><span class="num" style="background:#9333ea">查</span>每个部位"认准一种检查"（+ 该多久查一次）</h2>
-          <p class="sec-desc">{esc(get(d,"exam_plan_note","为什么尺寸常常对不上？因为同一个东西被 CT / 超声 / PET / MRI 换着测。原则：每个部位认准一种检查，以后每次都用同一种、和上一次同种的比。"))}</p>
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#9333ea">{t("查","Plan")}</span>{t("每个部位“认准一种检查”（+ 该多久查一次）","One exam per site (+ how often)")}</h2>
+          <p class="sec-desc">{esc(get(d,"exam_plan_note", t("为什么尺寸常常对不上？因为同一个东西被 CT / 超声 / PET / MRI 换着测。原则：每个部位认准一种检查，以后每次都用同一种、和上一次同种的比。","Why don't sizes line up? Because the same thing gets measured by CT / ultrasound / PET / MRI interchangeably. Rule: pick one exam per site and always compare like with like.")))}</p>
           <div class="grid g2">{cards}</div></section>''')
 
-    # recheck calendar (该复查日历)
+    # recheck calendar
     rc = get(d, "recheck_calendar", [])
     if rc:
         items = "".join(
             f'<div class="rm">{badge(get(x,"level","gray"), get(x,"due",""))}'
             f'<span class="sys">{esc(get(x,"exam"))}</span>'
             f'<span class="lv">{esc(get(x,"site",""))}</span></div>' for x in rc)
-        A(f'''<section><h2 class="sec"><span class="num" style="background:#0891b2">历</span>该复查日历（下次什么时候、做哪一项）</h2>
-          <p class="sec-desc">{esc(get(d,"recheck_calendar_note","把每个部位认准的检查 + 频率，变成一张到点提醒的清单——时间到了就带去做。"))}</p>
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#0891b2">{t("历","Cal")}</span>{t("该复查日历（下次什么时候、做哪一项）","Recheck calendar (when next, which exam)")}</h2>
+          <p class="sec-desc">{esc(get(d,"recheck_calendar_note", t("把每个部位认准的检查 + 频率，变成一张到点提醒的清单——时间到了就带去做。","Turns each site's exam + frequency into a reminder list — when it's due, go get it.")))}</p>
           <div class="risk-matrix">{items}</div></section>''')
 
     # lab trends + markers
@@ -268,11 +292,11 @@ def render(d):
               <div class="bars">{refl}{"".join(bars)}</div><p class="note-src">{esc(get(lab,"note",""))}</p></div>''')
         if markers:
             mk = "".join(f'<div class="mk"><div class="n">{esc(get(m,"n"))}</div><div class="vv">{esc(get(m,"v"))}</div><div class="rg">{esc(get(m,"rg",""))}</div></div>' for m in markers)
-            charts.append(f'<div class="chart"><h3 style="margin:0 0 10px;font-size:15px">关键化验指标</h3><div class="marker-grid">{mk}</div></div>')
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>关键指标趋势</h2>
+            charts.append(f'<div class="chart"><h3 style="margin:0 0 10px;font-size:15px">{t("关键化验指标","Key lab markers")}</h3><div class="marker-grid">{mk}</div></div>')
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("关键指标趋势","Key indicator trends")}</h2>
           <div class="grid g2">{"".join(charts)}</div></section>''')
 
-    # lab history (健康追踪：指标逐次趋势，自动标红一直异常的)
+    # lab history
     lh = get(d, "lab_history", {})
     if lh and get(lh, "rows"):
         dates = get(lh, "dates", [])
@@ -283,84 +307,84 @@ def render(d):
             flags = get(r, "flags", [])
             cells = ""
             for i, v in enumerate(vals):
-                f = flags[i] if i < len(flags) else ""
-                bad = f in ("high", "low")
-                arrow = " ↑" if f == "high" else (" ↓" if f == "low" else "")
+                fl = flags[i] if i < len(flags) else ""
+                bad = fl in ("high", "low")
+                arrow = " ↑" if fl == "high" else (" ↓" if fl == "low" else "")
                 style = ' style="background:#fdeaea;color:#b91c1c;font-weight:700"' if bad else ''
                 cells += f'<td class="c"{style}>{esc(v)}{arrow}</td>'
             trs.append(
                 f'<tr><td><b>{esc(get(r,"name"))}</b></td>'
                 f'<td style="color:var(--muted);font-size:11.5px">{esc(get(r,"ref",""))}</td>'
                 f'{cells}<td>{badge(get(r,"verdict_level","gray"), get(r,"verdict",""))}</td></tr>')
-        A(f'''<section><h2 class="sec"><span class="num" style="background:#0d9488">追</span>健康追踪：关键指标逐次趋势（自动标红一直异常的）</h2>
-          <p class="sec-desc">{esc(get(d,"lab_history_note","把多次体检/化验的关键指标连起来看——红色＝当次异常，右侧结论标出一直异常 / 在变差 / 已正常。健康人也建议这样长期盯着。"))}</p>
-          <div class="scroll"><table><thead><tr><th>指标</th><th>参考</th>{ths}<th>结论</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div></section>''')
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#0d9488">{t("追","Track")}</span>{t("健康追踪：关键指标逐次趋势（自动标红一直异常的）","Health tracking: key markers over time (persistent abnormals auto-flagged)")}</h2>
+          <p class="sec-desc">{esc(get(d,"lab_history_note", t("把多次体检/化验的关键指标连起来看——红色＝当次异常，右侧结论标出一直异常 / 在变差 / 已正常。健康人也建议这样长期盯着。","Connect key markers across visits — red = abnormal that time; the verdict shows persistently-abnormal / worsening / now-normal. Worth doing even if you're healthy.")))}</p>
+          <div class="scroll"><table><thead><tr><th>{t("指标","Marker")}</th><th>{t("参考","Ref")}</th>{ths}<th>{t("结论","Verdict")}</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div></section>''')
 
     # systems
     systems = get(d, "systems", [])
     if systems:
         cards = "".join(
             f'''<div class="card"><h3><span>{esc(get(s,"name"))}</span>{badge(get(s,"level","gray"))}</h3>
-            <div style="font-size:13px"><b>问题：</b>{esc(get(s,"problem",""))}<br><b>趋势：</b>{esc(get(s,"trend",""))}<br><b>建议：</b>{esc(get(s,"advice",""))}</div></div>'''
+            <div style="font-size:13px"><b>{t("问题：","Issue: ")}</b>{esc(get(s,"problem",""))}<br><b>{t("趋势：","Trend: ")}</b>{esc(get(s,"trend",""))}<br><b>{t("建议：","Plan: ")}</b>{esc(get(s,"advice",""))}</div></div>'''
             for s in systems)
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>按器官系统分类分析</h2>
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("按器官系统分类分析","By organ system")}</h2>
           <div class="grid g2">{cards}</div></section>''')
 
     # timeline
     tl = get(d, "timeline", [])
     if tl:
         items = []
-        for t in tl:
+        for tlx in tl:
             evs = []
-            for e in get(t, "events", []):
-                tc, tlbl = TAG_LABEL.get(get(e, "tag", "other"), ("t-other", "其他"))
+            for e in get(tlx, "events", []):
+                tc, tlbl = tag_label(get(e, "tag", "other"))
                 evs.append(f'<div class="ev"><span class="tag {tc}">{tlbl}</span>{esc(get(e,"text"))}<div class="where">📄 {esc(get(e,"where",""))}</div></div>')
-            items.append(f'<div class="tl{" major" if get(t,"major") else ""}"><div class="yr">{esc(get(t,"year"))}</div>{"".join(evs)}</div>')
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>疾病发展时间线</h2>
+            items.append(f'<div class="tl{" major" if get(tlx,"major") else ""}"><div class="yr">{esc(get(tlx,"year"))}</div>{"".join(evs)}</div>')
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("疾病发展时间线","Timeline")}</h2>
           <div class="timeline">{"".join(items)}</div></section>''')
 
     # changes
     ch = get(d, "changes", {})
     if ch:
         def ul(items): return "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in (items or [])) + "</ul>"
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>病情变好 / 变差 / 稳定总结</h2>
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("病情变好 / 变差 / 稳定总结","Better / worse / stable")}</h2>
           <div class="grid g2 change">
-            <div class="card ch-worse"><h3 style="color:var(--red)">A. 需重视 / 变重</h3>{ul(get(ch,"worse"))}</div>
-            <div class="card ch-maybe"><h3 style="color:var(--orange)">B. 待医生确认</h3>{ul(get(ch,"uncertain"))}</div>
-            <div class="card ch-stable"><h3 style="color:var(--green)">C. 基本稳定</h3>{ul(get(ch,"stable"))}</div>
-            <div class="card ch-better"><h3 style="color:var(--blue)">D. 明显好转</h3>{ul(get(ch,"better"))}</div>
+            <div class="card ch-worse"><h3 style="color:var(--red)">{t("A. 需重视 / 变重","A. Needs attention / worse")}</h3>{ul(get(ch,"worse"))}</div>
+            <div class="card ch-maybe"><h3 style="color:var(--orange)">{t("B. 待医生确认","B. Needs doctor confirmation")}</h3>{ul(get(ch,"uncertain"))}</div>
+            <div class="card ch-stable"><h3 style="color:var(--green)">{t("C. 基本稳定","C. Stable")}</h3>{ul(get(ch,"stable"))}</div>
+            <div class="card ch-better"><h3 style="color:var(--blue)">{t("D. 明显好转","D. Clearly improved")}</h3>{ul(get(ch,"better"))}</div>
           </div></section>''')
 
     # risk matrix
     rmx = get(d, "risk_matrix", [])
     if rmx:
         rms = "".join(f'<div class="rm">{badge(get(r,"level","gray"))}<span class="sys">{esc(get(r,"system"))}</span><span class="lv">{esc(get(r,"note",""))}</span></div>' for r in rmx)
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>风险等级矩阵</h2><div class="risk-matrix">{rms}</div></section>''')
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("风险等级矩阵","Risk matrix")}</h2><div class="risk-matrix">{rms}</div></section>''')
 
     # family qa
     qa = get(d, "family_qa", [])
     if qa:
         body = "".join(f'<div class="q">{esc(get(x,"q"))}</div><div class="a">{esc(get(x,"a"))}</div>' for x in qa)
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>给家属看的解释版（大白话）</h2>
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("给家属看的解释版（大白话）","In plain language (for the family)")}</h2>
           <div class="family qa">{body}</div></section>''')
 
     # actions
     ac = get(d, "actions", {})
     if ac:
         def ul(items): return "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in (items or [])) + "</ul>"
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>下一步行动建议</h2>
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("下一步行动建议","Next steps")}</h2>
           <div class="grid g2 action">
-            <div class="card now"><h3 style="color:var(--red)">🔴 立刻/尽快</h3>{ul(get(ac,"now"))}</div>
-            <div class="card m1"><h3 style="color:var(--orange)">🟠 1 个月内</h3>{ul(get(ac,"m1"))}</div>
-            <div class="card m3"><h3 style="color:var(--yellow)">🟡 3 个月内</h3>{ul(get(ac,"m3"))}</div>
-            <div class="card lt"><h3 style="color:var(--green)">🟢 长期随访</h3>{ul(get(ac,"long"))}</div>
+            <div class="card now"><h3 style="color:var(--red)">🔴 {t("立刻/尽快","Now / ASAP")}</h3>{ul(get(ac,"now"))}</div>
+            <div class="card m1"><h3 style="color:var(--orange)">🟠 {t("1 个月内","Within 1 month")}</h3>{ul(get(ac,"m1"))}</div>
+            <div class="card m3"><h3 style="color:var(--yellow)">🟡 {t("3 个月内","Within 3 months")}</h3>{ul(get(ac,"m3"))}</div>
+            <div class="card lt"><h3 style="color:var(--green)">🟢 {t("长期随访","Long-term")}</h3>{ul(get(ac,"long"))}</div>
           </div></section>''')
 
     # doctor questions
     dq = get(d, "doctor_questions", [])
     if dq:
         items = "".join(f'<div class="item"><span class="box"></span><span>{esc(x)}</span></div>' for x in dq)
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>带去医院的"问医生"清单</h2>
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("带去医院的“问医生”清单","Questions to bring to the doctor")}</h2>
           <div class="checklist">{items}</div></section>''')
 
     # conclusion
@@ -370,27 +394,34 @@ def render(d):
             f'<div class="line"><span class="k">{esc(get(c,"k"))}</span><span'
             + (' class="big" style="color:#fdba74"' if get(c, "big") else "")
             + f'>{esc(get(c,"v"))}</span></div>' for c in cc)
-        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>最终结论</h2>
-          <div class="concl"><h3>📌 基于证据的克制总结</h3>{lines}</div></section>''')
+        A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>{t("最终结论","Bottom line")}</h2>
+          <div class="concl"><h3>📌 {t("基于证据的克制总结","An evidence-based, measured summary")}</h3>{lines}</div></section>''')
 
-    A(f'''<footer>{esc(get(d,"sources",""))}<br>本报告由 AI 整理 · 仅供理解病情与医患沟通，<b>不构成医疗诊断，一切以执业医生意见为准</b>。</footer></div>''')
+    A(f'''<footer>{esc(get(d,"sources",""))}<br>{t("本报告由 AI 整理 · 仅供理解病情与医患沟通，<b>不构成医疗诊断，一切以执业医生意见为准</b>。","Compiled by AI · for understanding and doctor communication only. <b>Not a diagnosis; defer to a licensed physician.</b>")}</footer></div>''')
     return "\n".join(out)
 
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: python3 build_report.py <patient.json> <output.html>", file=sys.stderr)
+    global LANG
+    args = [a for a in sys.argv[1:]]
+    if "--lang" in args:
+        i = args.index("--lang")
+        LANG = args[i + 1] if i + 1 < len(args) else "zh"
+        del args[i:i + 2]
+    if len(args) < 2:
+        print("Usage: python3 build_report.py <patient.json> <output.html> [--lang zh|en]", file=sys.stderr)
         sys.exit(1)
-    with open(sys.argv[1], "r", encoding="utf-8") as f:
+    with open(args[0], "r", encoding="utf-8") as f:
         data = json.load(f)
     body = render(data)
-    title = get(get(data, "patient", {}), "name", "健康全景报告")
-    page = (f'<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">'
+    title = get(get(data, "patient", {}), "name", t("健康全景报告", "Health Overview Report"))
+    htmllang = "en" if LANG == "en" else "zh-CN"
+    page = (f'<!DOCTYPE html><html lang="{htmllang}"><head><meta charset="UTF-8">'
             f'<meta name="viewport" content="width=device-width, initial-scale=1.0">'
             f'<title>{esc(title)}</title><style>{CSS}</style></head><body>{body}</body></html>')
-    with open(sys.argv[2], "w", encoding="utf-8") as f:
+    with open(args[1], "w", encoding="utf-8") as f:
         f.write(page)
-    print(f"✓ 已生成 {sys.argv[2]}（{len(page)} 字符）")
+    print(f"✓ {args[1]} ({len(page)} chars, lang={LANG})")
 
 
 if __name__ == "__main__":

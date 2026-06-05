@@ -109,6 +109,9 @@ Claude 会自动：**逐张读取扫描件 → 提取每个病灶的尺寸和日
 # 结构化 JSON → 一页 HTML 报告（零依赖，开箱即用）
 python3 scripts/build_report.py examples/sample_patient.json out.html
 
+# 英文报告：加 --lang en（英文样例见 examples/sample_report.en.html）
+python3 scripts/build_report.py examples/sample_patient.en.json out.en.html --lang en
+
 # （可选）导出长图 + PDF，直接发微信给家人
 python3 scripts/export_pdf.py out.html out      # → out-long.png  +  out.pdf
 ```

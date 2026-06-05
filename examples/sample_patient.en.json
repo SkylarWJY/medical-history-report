@@ -1,0 +1,207 @@
+{
+  "_disclaimer": "Fully fictional demo data (patient name and ALL values are fictional). Template demonstration only; not a real person.",
+  "patient": {
+    "name": "Sample Patient (fictional · demo data only)",
+    "subtitle": "Female · ~78 yrs · followed 2016 → 2024 · demo dataset (not a real person)",
+    "pills": [
+      "For families caring for a patient — and for self health-tracking",
+      "Focus: a slowly-changing lung ground-glass nodule",
+      "Principle: examine first, decide surgery later"
+    ]
+  },
+  "overall": {
+    "risk_label": "Low–Medium / mostly surveillance",
+    "risk_note": "Mostly benign background nodules; one lung nodule developed a solid component — re-scan first, then decide.",
+    "stats": [
+      { "k": "Overall risk", "v": "Low–Med", "color": "yellow", "note": "benign-led, 1 to recheck" },
+      { "k": "Top concern", "v": "Lung GGN", "color": "orange", "note": "now part-solid" },
+      { "k": "Thyroid nodule", "v": "TI-RADS 3", "color": "green", "note": "low suspicion, stable" },
+      { "k": "Blood pressure", "v": "At goal", "color": "green", "note": "controlled on meds" }
+    ],
+    "long_existing": "Thyroid nodule, breast fibroadenoma, liver hemangioma, fatty liver, hypertension (all long-standing, benign / controlled)",
+    "new_recent": "Left upper-lobe ground-glass nodule grew 4mm → 8mm and developed a solid component (2024)",
+    "top_risk_hint": "Lung GGN — re-scan with thin-slice CT first, then let pulmonology decide"
+  },
+  "top_issues": [
+    {
+      "rank": 1, "level": "orange",
+      "title": "Left upper-lobe GGN (4mm → 8mm, solid component appeared)",
+      "why": "Slow 3-year growth with a new solid part warrants ruling out early lung adenocarcinoma — but needs a current CT to judge.",
+      "evidence": "2021-05 LDCT 4mm pure GGN → 2023-06 6mm → 2024-07 8mm part-solid (fictional).",
+      "advice": "① Get a thin-slice chest CT (compare to 2024-07); ② then let pulmonology/thoracic surgery decide follow-up, biopsy, or surgery. Don't skip the CT and jump to surgery."
+    },
+    {
+      "rank": 2, "level": "yellow",
+      "title": "Right thyroid nodule (TI-RADS 3)",
+      "why": "Low suspicion, stable size, low malignancy odds — routine ultrasound surveillance.",
+      "evidence": "2018-03 0.6cm → 2024-07 0.7cm, well-defined, no microcalcification (fictional).",
+      "advice": "Thyroid ultrasound every 12 months."
+    },
+    {
+      "rank": 3, "level": "yellow",
+      "title": "Hypertension (controlled on medication)",
+      "why": "Long-term cardiovascular risk factor; keep at goal and monitor target organs.",
+      "evidence": "~130/82 mmHg on meds; mild carotid intima thickening (fictional).",
+      "advice": "Cardiology follow-up; monitor BP, lipids, kidney function."
+    }
+  ],
+  "evolution": [
+    { "period": "2016", "diagnosis": "Checkup finds thyroid nodule, liver hemangioma", "status": "First found · benign", "status_level": "green", "evidence": "Thyroid 0.5cm; hemangioma 1.2cm (fictional)" },
+    { "period": "2018", "diagnosis": "Breast fibroadenoma found; hypertension diagnosed", "status": "Surveillance · started meds", "status_level": "green", "evidence": "Breast BI-RADS 3; BP 150/95 → meds" },
+    { "period": "2021", "diagnosis": "Low-dose CT finds a lung GGN", "status": "New · pure GGN 4mm", "status_level": "yellow", "evidence": "Left upper lobe 4mm pure GGN" },
+    { "period": "2023", "diagnosis": "Lung nodule slowly grows", "status": "Surveillance · 6mm", "status_level": "yellow", "evidence": "6mm, still mostly GGN" },
+    { "period": "2024", "diagnosis": "Lung nodule develops solid component", "status": "Recheck · 8mm mixed", "status_level": "orange", "evidence": "8mm part-solid, re-scan advised" }
+  ],
+  "data_gaps_note": "Note: the 'change' verdicts use 2021–2024 CTs; the latest lung CT is from 2024-07 with no recheck since — so 'how it is now' is a blank, and a current exam is needed before any real comparison.",
+  "data_gaps": [
+    { "site": "🫁 Lung nodule", "last_exam": "2024-07 thin-slice chest CT", "last_result": "8mm part-solid GGN", "recheck": "❌ none since", "recheck_level": "red", "todo": "Thin-slice chest CT (vs 2024-07)" },
+    { "site": "🦋 Thyroid nodule", "last_exam": "2024-07 thyroid ultrasound", "last_result": "0.7cm TI-RADS 3", "recheck": "✅ recent", "recheck_level": "green", "todo": "Routine ultrasound next year" },
+    { "site": "❤️ BP / lipids", "last_exam": "2024-07 labs + BP", "last_result": "130/82, LDL high", "recheck": "✅ recent", "recheck_level": "green", "todo": "Keep monitoring" }
+  ],
+  "lesions": [
+    {
+      "name": "🫁 Left upper-lobe ground-glass nodule",
+      "summary": "slow 3-year growth with a new solid part — the item to recheck",
+      "rows": [
+        { "date": "2021-05", "size": "4 mm", "extra": "pure GGN", "suv": "—", "modality": "Low-dose CT", "trend": "baseline" },
+        { "date": "2023-06", "size": "6 mm", "extra": "mostly GGN", "suv": "—", "modality": "Thin-slice CT", "trend": "up" },
+        { "date": "2024-07", "size": "8 mm", "extra": "part-solid", "suv": "—", "modality": "Thin-slice CT", "trend": "up" }
+      ],
+      "note": "Recent scans are all CT, so comparable. Pure GGN → solid component is the change to watch; next step is a repeat thin-slice CT, then pulmonology decides (fictional)."
+    },
+    {
+      "name": "🦋 Right thyroid nodule",
+      "summary": "stable for years, TI-RADS 3",
+      "rows": [
+        { "date": "2018-03", "size": "0.6 cm", "extra": "well-defined", "suv": "—", "modality": "Ultrasound", "trend": "baseline" },
+        { "date": "2021-04", "size": "0.6 cm", "extra": "no microcalc", "suv": "—", "modality": "Ultrasound", "trend": "flat" },
+        { "date": "2024-07", "size": "0.7 cm", "extra": "TI-RADS 3", "suv": "—", "modality": "Ultrasound", "trend": "flat" }
+      ],
+      "note": "Always ultrasound, so comparable; low suspicion and stable — yearly ultrasound is enough (fictional)."
+    }
+  ],
+  "exam_plan_note": "Why don't sizes line up? Because the same thing gets measured by different machines. Rule: pick one exam per site and always compare like with like.",
+  "exam_plan": [
+    { "site": "🫁 Lung nodule", "exam": "Thin-slice chest CT (HRCT)", "freq": "every 3–12 months (per doctor)", "why": "PET is unreliable for sub-8mm / ground-glass nodules; only thin-slice CT can compare size and solid component.", "used_before": "2021 CT · 2023 CT · 2024 CT (already consistent)" },
+    { "site": "🦋 Thyroid nodule", "exam": "Thyroid ultrasound", "freq": "every 12 months", "why": "Standard for nodule follow-up; fine-needle aspiration if needed.", "used_before": "always ultrasound" },
+    { "site": "🩷 Breast fibroadenoma", "exam": "Breast ultrasound (mammogram if needed)", "freq": "every 12 months", "why": "Routine follow-up for a benign fibroadenoma." },
+    { "site": "🫀 Liver hemangioma", "exam": "Abdominal ultrasound", "freq": "every 12 months", "why": "Benign hemangioma surveillance; add contrast MRI only if it grows." },
+    { "site": "❤️ BP / lipids / glucose", "exam": "BP check + bloodwork", "freq": "every 3–6 months", "why": "Already standardized and comparable — the easiest follow-up to keep up." }
+  ],
+  "lab_trends": [
+    {
+      "name": "Blood pressure (systolic, mmHg)",
+      "ref": "goal < 140",
+      "refline_ratio": 0.7,
+      "points": [
+        { "label": "2018\nno meds", "value": 150, "level": "red" },
+        { "label": "2019\non meds", "value": 135, "level": "green" },
+        { "label": "2021", "value": 132, "level": "green" },
+        { "label": "2024", "value": 130, "level": "green" }
+      ],
+      "note": "On medication, BP is at goal and steady (fictional)."
+    }
+  ],
+  "markers": [
+    { "n": "Thyroid TSH", "v": "2.1", "rg": "0.4–4.0 normal" },
+    { "n": "Lipids LDL", "v": "3.6", "rg": "mmol/L high" },
+    { "n": "Tumor markers", "v": "normal", "rg": "CEA / CA125 etc." },
+    { "n": "Liver function", "v": "normal", "rg": "ALT/AST" },
+    { "n": "Kidney function", "v": "normal", "rg": "creatinine/eGFR" },
+    { "n": "Fasting glucose", "v": "5.5", "rg": "mmol/L normal" }
+  ],
+  "lab_history_note": "Connect key markers across checkups — red = abnormal that time; the verdict flags persistently-abnormal / worsening / now-normal. Worth doing even if you're not sick (fictional).",
+  "lab_history": {
+    "dates": ["2018", "2021", "2024-07"],
+    "rows": [
+      { "name": "Total cholesterol", "ref": "<5.6 mmol/L", "values": ["5.2", "5.8", "6.3"], "flags": ["", "high", "high"], "verdict": "Persistently high · slowly rising", "verdict_level": "orange" },
+      { "name": "LDL cholesterol", "ref": "<3.4 mmol/L", "values": ["3.1", "3.5", "3.6"], "flags": ["", "high", "high"], "verdict": "Persistently high · manage", "verdict_level": "orange" },
+      { "name": "Uric acid", "ref": "<360 µmol/L", "values": ["300", "340", "385"], "flags": ["", "", "high"], "verdict": "Newly elevated · watch", "verdict_level": "yellow" },
+      { "name": "Fasting glucose", "ref": "3.9–6.1 mmol/L", "values": ["5.2", "5.4", "5.5"], "flags": ["", "", ""], "verdict": "Always normal", "verdict_level": "green" },
+      { "name": "Hemoglobin", "ref": "115–150 g/L", "values": ["120", "119", "125"], "flags": ["", "", ""], "verdict": "Normal · stable", "verdict_level": "green" },
+      { "name": "Thyroid TSH", "ref": "0.4–4.0", "values": ["2.0", "2.2", "2.1"], "flags": ["", "", ""], "verdict": "Always normal", "verdict_level": "green" }
+    ]
+  },
+  "recheck_calendar_note": "Turns each site's exam + frequency into a reminder list — when it's due, go get it (fictional).",
+  "recheck_calendar": [
+    { "exam": "Thin-slice chest CT (vs last)", "site": "🫁 Lung nodule", "due": "ASAP (>1 yr since 2024-07)", "level": "orange" },
+    { "exam": "Thyroid ultrasound", "site": "🦋 Thyroid nodule", "due": "yearly (next 2025-07)", "level": "green" },
+    { "exam": "Breast ultrasound", "site": "🩷 Breast", "due": "yearly", "level": "green" },
+    { "exam": "Abdominal ultrasound", "site": "🫀 Liver hemangioma / fatty liver", "due": "yearly", "level": "green" },
+    { "exam": "BP + lipids", "site": "❤️ Cardiovascular", "due": "every 3–6 months (lipids stay high)", "level": "yellow" }
+  ],
+  "systems": [
+    { "name": "🫁 Lung", "level": "orange", "problem": "Left upper-lobe GGN 4→8mm, solid component appeared.", "trend": "slowly growing", "advice": "Repeat thin-slice CT, then pulmonology / thoracic surgery decides." },
+    { "name": "🦋 Thyroid", "level": "green", "problem": "Right nodule 0.7cm, TI-RADS 3; TSH normal.", "trend": "stable", "advice": "Yearly ultrasound." },
+    { "name": "🩷 Breast", "level": "green", "problem": "Fibroadenoma 1.2cm, BI-RADS 3.", "trend": "stable", "advice": "Yearly breast ultrasound." },
+    { "name": "❤️ Cardiovascular", "level": "yellow", "problem": "Hypertension (controlled on meds); lipids high; mild carotid intima thickening.", "trend": "controlled", "advice": "Cardiology follow-up; control lipids and BP." },
+    { "name": "🫀 Hepatobiliary", "level": "green", "problem": "Liver hemangioma 1.2cm; fatty liver.", "trend": "stable", "advice": "Abdominal ultrasound follow-up." }
+  ],
+  "timeline": [
+    { "year": "2016 · first checkup", "major": false, "events": [
+      { "tag": "other", "text": "Checkup finds a small thyroid nodule and a liver hemangioma, both considered benign.", "where": "Sample checkup center" }
+    ]},
+    { "year": "2018 · new items", "major": false, "events": [
+      { "tag": "dx", "text": "Breast fibroadenoma found (BI-RADS 3); hypertension diagnosed and meds started.", "where": "Sample hospital" }
+    ]},
+    { "year": "2021 · lung nodule appears", "major": true, "events": [
+      { "tag": "img", "text": "Low-dose CT finds a 4mm pure GGN in the left upper lobe; surveillance advised.", "where": "Sample hospital LDCT" }
+    ]},
+    { "year": "2023 · slow growth", "major": false, "events": [
+      { "tag": "img", "text": "Lung nodule grows to 6mm, still mostly GGN.", "where": "Sample hospital thin-slice CT" }
+    ]},
+    { "year": "2024 · solid component", "major": true, "events": [
+      { "tag": "img", "text": "Lung nodule 8mm part-solid; re-scan advised.", "where": "Sample hospital thin-slice CT" },
+      { "tag": "fu", "text": "Thyroid, breast, liver hemangioma all stable on recheck.", "where": "Sample hospital" }
+    ]}
+  ],
+  "changes": {
+    "worse": ["Lung GGN slowly grew (4→8mm) and developed a solid component (per 2021–2024 CTs)."],
+    "uncertain": ["How the lung nodule is 'now' is unknown — no CT since 2024; needs a repeat scan first."],
+    "stable": ["Thyroid nodule, breast fibroadenoma, liver hemangioma stable for years; BP at goal."],
+    "better": ["Hypertension dropped from 150/95 to a steady 130/82 on medication."]
+  },
+  "risk_matrix": [
+    { "level": "orange", "system": "Lung GGN", "note": "re-scan first" },
+    { "level": "yellow", "system": "Hypertension / lipids", "note": "keep at goal" },
+    { "level": "green", "system": "Thyroid nodule TI-RADS3", "note": "yearly ultrasound" },
+    { "level": "green", "system": "Breast fibroadenoma / liver hemangioma", "note": "yearly ultrasound" }
+  ],
+  "family_qa": [
+    { "q": "❓ How is she overall?", "a": "Generally fine — mostly the small benign nodules a checkup often finds. The one to watch is a lung ground-glass nodule that's slowly grown and now has a solid part (fictional)." },
+    { "q": "❓ Is it serious? Surgery now?", "a": "Not an emergency, and not straight to surgery. First get a thin-slice CT to see how it is now, then let pulmonology / thoracic surgery decide: watch, biopsy, or operate. Examine first, decide later." },
+    { "q": "❓ What's the next step?", "a": "Bring prior CT discs, see pulmonology for a repeat thin-slice CT; keep thyroid, breast, and BP on a yearly schedule." }
+  ],
+  "actions": {
+    "now": [
+      "🫁 Get a thin-slice chest CT (HRCT) and bring the 2024-07 scan to compare directly.",
+      "📀 Bring all prior lung CT films / discs (the comparison depends on them)."
+    ],
+    "m1": [
+      "With the new CT, pulmonology / thoracic surgery decides: watch, biopsy, or operate — don't schedule surgery without a current scan.",
+      "Cardiology follow-up for BP; recheck lipids and kidney function."
+    ],
+    "m3": [
+      "Repeat the lung thin-slice CT per the radiologist to compare the nodule.",
+      "Yearly ultrasound for thyroid, breast, liver hemangioma."
+    ],
+    "long": [
+      "Pick one exam per site at a fixed frequency (see 'recheck calendar').",
+      "Control lipids and BP; keep and update the records file."
+    ]
+  },
+  "doctor_questions": [
+    "How likely is this lung GGN to be malignant? Repeat the thin-slice CT first to decide? How often?",
+    "Do we need a PET-CT or biopsy, or is surveillance enough?",
+    "Does the TI-RADS 3 thyroid nodule need a biopsy? What follow-up interval?",
+    "What are the BP / lipid targets? Any target-organ tests to add?"
+  ],
+  "conclusion": [
+    { "k": "Overall risk", "v": "Low–Medium: mostly surveillance, one lung nodule to re-scan first.", "big": true },
+    { "k": "To rule out", "v": "Left upper-lobe GGN (solid component; repeat thin-slice CT before deciding)." },
+    { "k": "Established", "v": "Thyroid nodule (TI-RADS3), breast fibroadenoma (BI-RADS3), liver hemangioma, fatty liver, controlled hypertension — all benign / controlled." },
+    { "k": "Unclear", "v": "How the lung nodule is 'now' — no CT since 2024; needs a repeat scan." },
+    { "k": "Most important next step", "v": "Examine first, decide surgery later: get a thin-slice chest CT (vs 2024-07), then let pulmonology / thoracic surgery decide." }
+  ],
+  "sources": "Source: this is a fictional demo sample and does not correspond to any real record."
+}
