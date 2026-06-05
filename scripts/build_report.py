@@ -189,6 +189,19 @@ def render(d):
           <div class="scroll"><table><thead><tr><th>时期</th><th>诊断/分期</th><th>病情状态</th><th>关键证据</th></tr></thead>
           <tbody>{trs}</tbody></table></div></section>''')
 
+    # data gaps (缺什么检查要补)
+    dg = get(d, "data_gaps", [])
+    if dg:
+        trs = "".join(
+            f'<tr><td><b>{esc(get(x,"site"))}</b></td><td>{esc(get(x,"last_exam",""))}</td>'
+            f'<td>{esc(get(x,"last_result",""))}</td>'
+            f'<td class="c">{badge(get(x,"recheck_level","gray"), get(x,"recheck",""))}</td>'
+            f'<td>👉 {esc(get(x,"todo",""))}</td></tr>' for x in dg)
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#b91c1c">缺</span>关键数据缺口：缺什么检查要补</h2>
+          <p class="sec-desc">{esc(get(d,"data_gaps_note","同一个部位要用同一种检查、对比同一种检查才有意义；下面列出每个部位最近一次标准检查、是否复查、以及现在该补做什么。"))}</p>
+          <div class="scroll"><table><thead><tr><th>部位</th><th>最近一次标准检查</th><th>那次结果</th><th>最近复查了吗</th><th>现在要补做</th></tr></thead>
+          <tbody>{trs}</tbody></table></div></section>''')
+
     # lesion size tracking
     lesions = get(d, "lesions", [])
     if lesions:
@@ -205,6 +218,21 @@ def render(d):
               <tbody>{"".join(trs)}</tbody></table></div><p class="note-src">{esc(get(L,"note",""))}</p>''')
         A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>重点病灶尺寸变化轨迹（核心）</h2>
           <p class="sec-desc">每个病灶的逐次精确尺寸。↑增大 / ↓缩小 / →持平。</p>{"".join(blocks)}</section>''')
+
+    # exam plan (每个部位认准做哪种检查 + 随访频率)
+    ep = get(d, "exam_plan", [])
+    if ep:
+        cards = "".join(
+            f'''<div class="card" style="border-left:4px solid var(--blue)"><h3 style="font-size:15px">{esc(get(x,"site"))}</h3>
+            <div style="font-size:13px"><b>✅ 认准做：</b><span style="color:var(--blue-d)"><b>{esc(get(x,"exam"))}</b></span>'''
+            + (f'　<b>多久一次：</b>{esc(get(x,"freq"))}' if get(x, "freq") else "")
+            + (f'<br><b>为什么：</b>{esc(get(x,"why"))}' if get(x, "why") else "")
+            + (f'<br><span style="color:var(--muted)">历年用过（看它怎么换来换去）：{esc(get(x,"used_before"))}</span>' if get(x, "used_before") else "")
+            + '</div></div>'
+            for x in ep)
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#9333ea">查</span>每个部位"认准一种检查"（+ 该多久查一次）</h2>
+          <p class="sec-desc">{esc(get(d,"exam_plan_note","为什么尺寸常常对不上？因为同一个东西被 CT / 超声 / PET / MRI 换着测。原则：每个部位认准一种检查，以后每次都用同一种、和上一次同种的比。"))}</p>
+          <div class="grid g2">{cards}</div></section>''')
 
     # lab trends + markers
     labs = get(d, "lab_trends", [])

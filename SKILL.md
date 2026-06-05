@@ -1,17 +1,21 @@
 ---
 name: medical-history-report
 description: >-
-  Turn a person's multi-year medical records (scanned reports, lab results,
-  imaging, ultrasound, CT/MRI, PET-CT, pathology, discharge summaries) into a
-  single self-contained, mobile-friendly HTML health dashboard for family
-  members — with a disease timeline, a diagnosis-evolution table, per-lesion
-  size-tracking tables (how each nodule/mass changed over the years), lab trend
-  charts, risk cards, a plain-language family explanation, and a doctor-visit
-  checklist. Use when someone provides a folder or zip of medical records
-  (especially many scanned images) and wants a clear visual summary of overall
-  health status, disease progression, key risks, and next steps. Output is
-  always evidence-based, flags uncertainty as "需医生确认", and never replaces a
-  doctor. Can also export the report to a long PNG image and a PDF.
+  For families caring for a patient at home: turn years of scattered medical
+  records (scanned reports, labs, ultrasound, CT/MRI, PET-CT, pathology,
+  discharge summaries) into ONE clear, mobile-friendly HTML health report —
+  a disease-history timeline, a diagnosis-evolution table, per-lesion
+  size-tracking where each nodule/mass is compared ONLY to itself over time
+  (with the exam type + year-month on every data point), lab-trend charts, a
+  "what exam is each site missing / go get it" data-gap table, an
+  "认准一种检查 + how often" follow-up plan (what a proper checkup should
+  include), risk cards, a plain-language family explanation, and a doctor-visit
+  checklist. Enforces a "examine first, decide surgery later" ordering. Use when
+  someone provides a folder or zip of medical records (especially many scanned
+  images) and wants a clear summary of overall status, what got better / worse /
+  stayed the same, what's missing, and what to do next. Always evidence-based,
+  flags uncertainty as "需医生确认", never replaces a doctor; can export a long PNG
+  and PDF.
 ---
 
 # 病历 → 健康全景报告（Medical History Report）
@@ -44,13 +48,26 @@ description: >-
   按 `assets/schema.json` 里的结构返回。这能把大量图片的读取从几小时压缩到几分钟。
 
 把提取结果整理成符合 **`assets/schema.json`** 的一个 JSON（见 `examples/sample_patient.json` 演示）。
-关键是 `lesions[]`：把同一病灶历次尺寸**按时间排序**，标注 trend（up/down/flat），
-这样报告里就能呈现"附件占位 2015→2025 的精确大小轨迹"。
+关键是 `lesions[]`：把同一病灶历次尺寸**按时间排序**，标注 trend（up/down/flat）+ **每行的检查类型(modality)**，
+这样报告里就能呈现"某结节 2015→2025 的精确大小轨迹"。
+
+> ⚠️ **同部位才可比、注明日期与检查类型**：尺寸只在"同一部位 + 同一种检查"之间比较才有意义。
+> 不同部位**绝不**放进同一张对比表；每个数据点都要写清 **年-月** 和 **CT/超声/PET/MRI**——
+> 因为同一个肿块常被不同设备测，数字本就对不上。
 
 ### 3. 汇总成结构化 JSON
-按器官系统归类、画出诊断演变史（`evolution`）、整理指标趋势（`lab_trends`/`markers`）、
-写 Top 问题、变好/变差/稳定四分类、风险矩阵、家属版解释、行动建议、问医生清单、最终结论。
-**所有文字均来自原文或基于原文的克制解读**。
+按器官系统归类，并填好这些"让家属看懂"的板块：
+- `evolution` 诊断演变史 · `lesions` 每个病灶单独一张卡（只和自己比）· `lab_trends`/`markers` 指标趋势
+- **`data_gaps` 关键数据缺口**：每个部位最近一次标准检查是什么时候、**有没有复查**、现在该补做什么——
+  明确回答家属常问的"是没找到报告，还是根本没做这个检查"。
+- **`exam_plan` 每个部位认准一种检查 + 多久查一次**：既解释"为什么尺寸对不上"，
+  也相当于一份"正常随访/体检该做哪些检查"的清单（如 肺→薄层CT、甲状腺→超声、盆腔占位→增强MRI）。
+- `top_issues` / `changes` 变好-没变-变差（**三类互斥、每件事只出现一次**）/ `risk_matrix` / `family_qa` / `actions` / `doctor_questions` / `conclusion`。
+
+> 🩺 **"先检查、后手术"原则**：凡是缺最新数据的病灶，`actions.now` 一律先写"补做对应检查（认准同一种、和上一次比）"，
+> 把"是否手术/治疗"放到 `actions.m1`（拿到结果 + 医生/多学科会诊后再定）。**不要在没有最新检查时就建议手术。**
+
+**所有文字均来自原文或基于原文的克制解读；不确定处写"需医生确认"。**
 
 ### 4. 生成 HTML
 ```bash

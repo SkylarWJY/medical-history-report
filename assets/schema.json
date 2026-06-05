@@ -71,6 +71,35 @@
         }
       }
     },
+    "data_gaps_note": { "type": "string" },
+    "data_gaps": {
+      "description": "缺什么检查要补：每个部位最近一次标准检查、是否复查、现在该补做什么。回答家属常问的'是没找到报告，还是根本没做这个检查'。",
+      "type": "array", "items": {
+        "type": "object",
+        "properties": {
+          "site": { "type": "string" },
+          "last_exam": { "type": "string", "description": "最近一次标准检查，含年-月+检查类型" },
+          "last_result": { "type": "string" },
+          "recheck": { "type": "string", "description": "最近复查了吗，如 '❌ 没复查' / '✅ 较新'" },
+          "recheck_level": { "enum": ["green", "yellow", "orange", "red"] },
+          "todo": { "type": "string", "description": "现在要补做的检查" }
+        }
+      }
+    },
+    "exam_plan_note": { "type": "string" },
+    "exam_plan": {
+      "description": "每个部位'认准一种检查'+多久查一次。既解释为什么尺寸常对不上（不同设备测），也相当于正常随访/体检该做的检查清单。",
+      "type": "array", "items": {
+        "type": "object",
+        "properties": {
+          "site": { "type": "string" },
+          "exam": { "type": "string", "description": "认准做哪一种检查（标准方式），如 胸部薄层CT / 甲状腺超声 / 盆腔增强MRI" },
+          "freq": { "type": "string", "description": "多久一次" },
+          "why": { "type": "string", "description": "为什么用这种、不能用别的" },
+          "used_before": { "type": "string", "description": "可选：历年实际用过哪些检查（暴露不一致）" }
+        }
+      }
+    },
     "lab_trends": {
       "type": "array", "items": {
         "type": "object",
