@@ -234,6 +234,17 @@ def render(d):
           <p class="sec-desc">{esc(get(d,"exam_plan_note","为什么尺寸常常对不上？因为同一个东西被 CT / 超声 / PET / MRI 换着测。原则：每个部位认准一种检查，以后每次都用同一种、和上一次同种的比。"))}</p>
           <div class="grid g2">{cards}</div></section>''')
 
+    # recheck calendar (该复查日历)
+    rc = get(d, "recheck_calendar", [])
+    if rc:
+        items = "".join(
+            f'<div class="rm">{badge(get(x,"level","gray"), get(x,"due",""))}'
+            f'<span class="sys">{esc(get(x,"exam"))}</span>'
+            f'<span class="lv">{esc(get(x,"site",""))}</span></div>' for x in rc)
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#0891b2">历</span>该复查日历（下次什么时候、做哪一项）</h2>
+          <p class="sec-desc">{esc(get(d,"recheck_calendar_note","把每个部位认准的检查 + 频率，变成一张到点提醒的清单——时间到了就带去做。"))}</p>
+          <div class="risk-matrix">{items}</div></section>''')
+
     # lab trends + markers
     labs = get(d, "lab_trends", [])
     markers = get(d, "markers", [])
@@ -260,6 +271,30 @@ def render(d):
             charts.append(f'<div class="chart"><h3 style="margin:0 0 10px;font-size:15px">关键化验指标</h3><div class="marker-grid">{mk}</div></div>')
         A(f'''<section><h2 class="sec"><span class="num">{secnum()}</span>关键指标趋势</h2>
           <div class="grid g2">{"".join(charts)}</div></section>''')
+
+    # lab history (健康追踪：指标逐次趋势，自动标红一直异常的)
+    lh = get(d, "lab_history", {})
+    if lh and get(lh, "rows"):
+        dates = get(lh, "dates", [])
+        ths = "".join(f'<th>{esc(x)}</th>' for x in dates)
+        trs = []
+        for r in get(lh, "rows", []):
+            vals = get(r, "values", [])
+            flags = get(r, "flags", [])
+            cells = ""
+            for i, v in enumerate(vals):
+                f = flags[i] if i < len(flags) else ""
+                bad = f in ("high", "low")
+                arrow = " ↑" if f == "high" else (" ↓" if f == "low" else "")
+                style = ' style="background:#fdeaea;color:#b91c1c;font-weight:700"' if bad else ''
+                cells += f'<td class="c"{style}>{esc(v)}{arrow}</td>'
+            trs.append(
+                f'<tr><td><b>{esc(get(r,"name"))}</b></td>'
+                f'<td style="color:var(--muted);font-size:11.5px">{esc(get(r,"ref",""))}</td>'
+                f'{cells}<td>{badge(get(r,"verdict_level","gray"), get(r,"verdict",""))}</td></tr>')
+        A(f'''<section><h2 class="sec"><span class="num" style="background:#0d9488">追</span>健康追踪：关键指标逐次趋势（自动标红一直异常的）</h2>
+          <p class="sec-desc">{esc(get(d,"lab_history_note","把多次体检/化验的关键指标连起来看——红色＝当次异常，右侧结论标出一直异常 / 在变差 / 已正常。健康人也建议这样长期盯着。"))}</p>
+          <div class="scroll"><table><thead><tr><th>指标</th><th>参考</th>{ths}<th>结论</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div></section>''')
 
     # systems
     systems = get(d, "systems", [])

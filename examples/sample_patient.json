@@ -104,11 +104,31 @@
   ],
   "markers": [
     { "n": "甲功 TSH", "v": "2.1", "rg": "0.4–4.0 正常" },
-    { "n": "血脂 LDL", "v": "3.4", "rg": "mmol/L 偏高" },
+    { "n": "血脂 LDL", "v": "3.6", "rg": "mmol/L 偏高" },
     { "n": "肿瘤标志物", "v": "正常", "rg": "CEA/CA125 等" },
     { "n": "肝功能", "v": "正常", "rg": "ALT/AST" },
     { "n": "肾功能", "v": "正常", "rg": "肌酐/eGFR" },
-    { "n": "空腹血糖", "v": "5.4", "rg": "mmol/L 正常" }
+    { "n": "空腹血糖", "v": "5.5", "rg": "mmol/L 正常" }
+  ],
+  "lab_history_note": "把多次体检的关键指标连起来看——红色＝当次异常，右侧结论标出一直异常 / 在变差 / 已正常。即使没生病的人，也建议这样长期盯着（虚构示例）。",
+  "lab_history": {
+    "dates": ["2018", "2021", "2024-07"],
+    "rows": [
+      { "name": "总胆固醇", "ref": "<5.6 mmol/L", "values": ["5.2", "5.8", "6.3"], "flags": ["", "high", "high"], "verdict": "一直偏高 · 缓慢上升", "verdict_level": "orange" },
+      { "name": "低密度脂蛋白 LDL", "ref": "<3.4 mmol/L", "values": ["3.1", "3.5", "3.6"], "flags": ["", "high", "high"], "verdict": "一直偏高 · 要控脂", "verdict_level": "orange" },
+      { "name": "尿酸", "ref": "<360 µmol/L", "values": ["300", "340", "385"], "flags": ["", "", "high"], "verdict": "新近升高 · 留意", "verdict_level": "yellow" },
+      { "name": "空腹血糖", "ref": "3.9–6.1 mmol/L", "values": ["5.2", "5.4", "5.5"], "flags": ["", "", ""], "verdict": "一直正常", "verdict_level": "green" },
+      { "name": "血红蛋白", "ref": "115–150 g/L", "values": ["120", "119", "125"], "flags": ["", "", ""], "verdict": "正常 · 稳定", "verdict_level": "green" },
+      { "name": "甲功 TSH", "ref": "0.4–4.0", "values": ["2.0", "2.2", "2.1"], "flags": ["", "", ""], "verdict": "一直正常", "verdict_level": "green" }
+    ]
+  },
+  "recheck_calendar_note": "把每个部位认准的检查 + 频率，变成一张到点提醒的清单——时间到了就带去做（虚构示例）。",
+  "recheck_calendar": [
+    { "exam": "胸部薄层 CT（对比上次）", "site": "🫁 肺结节", "due": "尽快（距上次 2024-07 已超 1 年）", "level": "orange" },
+    { "exam": "甲状腺超声", "site": "🦋 甲状腺结节", "due": "每年一次（下次 2025-07）", "level": "green" },
+    { "exam": "乳腺超声", "site": "🩷 乳腺", "due": "每年一次", "level": "green" },
+    { "exam": "腹部超声", "site": "🫀 肝血管瘤 / 脂肪肝", "due": "每年一次", "level": "green" },
+    { "exam": "测血压 + 血脂", "site": "❤️ 心血管", "due": "每 3–6 个月（血脂一直偏高）", "level": "yellow" }
   ],
   "systems": [
     { "name": "🫁 肺 / 呼吸", "level": "orange", "problem": "左肺上叶磨玻璃结节 4→8mm，出现实性成分。", "trend": "缓慢增大", "advice": "先复查薄层 CT，再由呼吸 / 胸外科决定。" },
