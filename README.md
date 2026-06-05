@@ -2,6 +2,8 @@
 
 # 🩺 病历全景报告 · Medical History Report
 
+**中文** · [English](README.en.md)
+
 ### 家里有人生病，或想长期管好自己的健康 —— 把一堆看不懂的检查报告，变成一份看得懂、追得住的健康报告。
 
 *For caregivers AND self-trackers: turn messy medical records into one clear, longitudinal health report.*
